@@ -139,9 +139,14 @@ export default function InstallGuide() {
             <span className="section-count" style={{ marginLeft: 4 }}>{tech.errors.length} known</span>
           </h2>
           <div className="grid grid-2">
-            {tech.errors.map(err => (
-              <ErrorCard key={err.id} error={err} onClick={() => navigate(`/errors/${err.id}`)} />
-            ))}
+            {tech.errors.map(err => {
+              // Embedded errors from GET /technologies/:id don't include the parent technology
+              // (circular ref protection). Inject it manually so ErrorCard works correctly.
+              const fullErr = { ...err, technology: { id: tech.id, name: tech.name, category: tech.category, description: tech.description, latestVersion: tech.latestVersion, downloadUrl: tech.downloadUrl, officialWebsite: tech.officialWebsite, commonErrors: tech.commonErrors, installationSteps: tech.installationSteps } };
+              return (
+                <ErrorCard key={err.id} error={fullErr as any} onClick={() => navigate(`/errors/${err.id}`)} />
+              );
+            })}
           </div>
         </div>
       )}
