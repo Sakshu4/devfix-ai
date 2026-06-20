@@ -86,11 +86,18 @@ export default function Technologies() {
               {/* Footer */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <button
+                  className="btn btn-outline"
+                  style={{ padding: '8px 14px', fontSize: '0.82rem' }}
+                  onClick={() => navigate(`/guide/${tech.id}`)}
+                >
+                  📋 Install Guide
+                </button>
+                <button
                   className="btn btn-primary"
                   style={{ flex: 1, justifyContent: 'center', padding: '8px 14px' }}
                   onClick={() => navigate(`/search?q=${encodeURIComponent(tech.name)}`)}
                 >
-                  🔍 Search {tech.name} Errors
+                  🔍 Search Errors
                 </button>
                 {tech.officialWebsite && (
                   <a

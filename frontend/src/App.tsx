@@ -4,6 +4,7 @@ import Home         from './pages/Home';
 import SearchErrors from './pages/SearchErrors';
 import ErrorDetail  from './pages/ErrorDetail';
 import Technologies from './pages/Technologies';
+import InstallGuide from './pages/InstallGuide';
 import './index.css';
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/search"       element={<SearchErrors />} />
           <Route path="/errors/:id"   element={<ErrorDetail />}  />
           <Route path="/technologies" element={<Technologies />} />
+          <Route path="/guide/:id"    element={<InstallGuide />}  />
           {/* 404 fallback */}
           <Route path="*" element={
             <div className="state-center" style={{ marginTop: 100 }}>

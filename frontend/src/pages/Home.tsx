@@ -1,12 +1,33 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllErrors, getAllTechnologies } from '../api/devfix';
+import ErrorCard from '../components/ErrorCard';
+import type { TechError } from '../types';
 
 const EXAMPLE_SEARCHES = [
   'JAVA_HOME', 'port 8080', 'OutOfMemoryError',
-  'mvn not recognized', 'NullPointerException', 'connection refused',
+  'mvn not recognized', 'NullPointerException', 'docker daemon',
+  'merge conflict', 'module not found',
 ];
 
 export default function Home() {
   const navigate = useNavigate();
+  const [criticalErrors, setCriticalErrors] = useState<TechError[]>([]);
+  const [stats, setStats] = useState({ errors: 0, technologies: 0 });
+
+  useEffect(() => {
+    // Fetch top CRITICAL + HIGH errors for Common Fixes section
+    getAllErrors().then(all => {
+      const topErrors = all
+        .filter(e => e.severity === 'CRITICAL' || e.severity === 'HIGH')
+        .slice(0, 6);
+      setCriticalErrors(topErrors);
+      setStats(s => ({ ...s, errors: all.length }));
+    });
+    getAllTechnologies().then(techs => {
+      setStats(s => ({ ...s, technologies: techs.length }));
+    });
+  }, []);
 
   return (
     <>
@@ -18,8 +39,8 @@ export default function Home() {
           <span>Instantly with AI</span>
         </h1>
         <p>
-          Search 10+ real developer errors — JAVA_HOME, Maven, Spring Boot,
-          database connections — with step-by-step solutions.
+          Search {stats.errors || '25'}+ real developer errors — Java, Maven, Docker, Git —
+          with step-by-step solutions and installation guides.
         </p>
         <div className="hero-actions">
           <button className="btn btn-primary" onClick={() => navigate('/search')}>
@@ -31,42 +52,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Quick searches ── */}
       <div className="container page" style={{ paddingTop: 0 }}>
+
+        {/* ── Quick searches ── */}
         <div className="section-header">
           <h2 className="section-title">Common Searches</h2>
           <span className="section-count">Try one →</span>
         </div>
         <div className="filter-bar">
           {EXAMPLE_SEARCHES.map(q => (
-            <button
-              key={q}
-              className="filter-btn"
-              onClick={() => navigate(`/search?q=${encodeURIComponent(q)}`)}
-            >
+            <button key={q} className="filter-btn"
+              onClick={() => navigate(`/search?q=${encodeURIComponent(q)}`)}>
               {q}
             </button>
           ))}
         </div>
 
-        {/* ── Stats ── */}
+        {/* ── Live Stats ── */}
         <div className="grid grid-3" style={{ marginTop: 40 }}>
           {[
-            { icon: '🐛', count: '10+', label: 'Real Errors Documented' },
-            { icon: '🔧', count: '2',   label: 'Technologies Covered'  },
-            { icon: '⚡', count: '5',   label: 'Error Categories'       },
+            { icon: '🐛', count: stats.errors  || '...', label: 'Real Errors Documented' },
+            { icon: '🔧', count: stats.technologies || '...', label: 'Technologies Covered' },
+            { icon: '⚡', count: '5',  label: 'Error Categories' },
           ].map(s => (
             <div className="card" key={s.label} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '2rem', marginBottom: 8 }}>{s.icon}</div>
               <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent)' }}>
                 {s.count}
               </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                {s.label}
-              </div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{s.label}</div>
             </div>
           ))}
         </div>
+
+        {/* ── Common Fixes (live from API) ── */}
+        {criticalErrors.length > 0 && (
+          <div style={{ marginTop: 60 }}>
+            <div className="section-header">
+              <h2 className="section-title">
+                🔴 Common Fixes
+                <span style={{ fontSize: '0.85rem', fontWeight: 400, color: 'var(--text-muted)', marginLeft: 10 }}>
+                  Most critical errors developers hit
+                </span>
+              </h2>
+              <button className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.82rem' }}
+                onClick={() => navigate('/search')}>
+                View all →
+              </button>
+            </div>
+            <div className="grid grid-2">
+              {criticalErrors.map(err => (
+                <ErrorCard key={err.id} error={err} onClick={() => navigate(`/errors/${err.id}`)} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── How it works ── */}
         <div style={{ marginTop: 60 }}>
@@ -92,6 +132,27 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        {/* ── Installation Guides CTA ── */}
+        <div style={{ marginTop: 60, marginBottom: 20 }}>
+          <div className="card" style={{
+            background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(124,58,237,0.08))',
+            border: '1px solid var(--border-accent)',
+            textAlign: 'center', padding: '40px 24px'
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: 12 }}>📋</div>
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 8 }}>
+              Installation Guides
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 20, fontSize: '0.9rem' }}>
+              Step-by-step setup guides for Java, Maven, Docker, Git and more.
+            </p>
+            <button className="btn btn-primary" onClick={() => navigate('/technologies')}>
+              View All Guides →
+            </button>
+          </div>
+        </div>
+
       </div>
     </>
   );

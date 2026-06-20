@@ -5,6 +5,9 @@ target/
 *.war
 .mvn/wrapper/maven-wrapper.jar
 
+# ── Eclipse / STS workspace ───────────────────────────────
+database/.metadata/
+
 # ── Spring Boot ───────────────────────────────────────────
 *.log
 application-local.properties
