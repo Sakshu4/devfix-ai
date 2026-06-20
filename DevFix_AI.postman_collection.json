@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "DevFix AI API",
+    "description": "Complete API collection for DevFix AI — Software Installation Intelligence Platform\n\nBase URL: http://localhost:8082\n\nModules:\n- Technologies: Software/tool knowledge base\n- Errors: Developer error knowledge base with search",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8082", "type": "string" },
+    { "key": "techId",  "value": "1",                    "type": "string" },
+    { "key": "errorId", "value": "1",                    "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Technologies",
+      "item": [
+        {
+          "name": "GET All Technologies",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/technologies",
+            "description": "Returns all technology records.\n\nExpected: 200 OK + JSON array"
+          }
+        },
+        {
+          "name": "GET Technology By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/technologies/{{techId}}",
+            "description": "Returns one technology by its ID.\n\nExpected: 200 OK + technology object with errors[] list"
+          }
+        },
+        {
+          "name": "GET Technology — 404 Not Found",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/technologies/9999",
+            "description": "Tests 404 exception handler.\n\nExpected: 404 + {status, message, timestamp}"
+          }
+        },
+        {
+          "name": "GET Technology — 400 Invalid Type",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/technologies/abc",
+            "description": "Tests type mismatch exception handler.\n\nExpected: 400 + {status, message, timestamp}"
+          }
+        },
+        {
+          "name": "POST Create Technology (Valid)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/technologies",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Docker\",\n  \"description\": \"Container platform\",\n  \"category\": \"DevOps\",\n  \"latestVersion\": \"26\",\n  \"downloadUrl\": \"https://www.docker.com/\",\n  \"officialWebsite\": \"https://www.docker.com\",\n  \"commonErrors\": \"Docker daemon not running\",\n  \"installationSteps\": \"Download Docker Desktop → Install → Start Docker service\"\n}"
+            },
+            "description": "Creates a new technology record.\n\nExpected: 201 Created + created object"
+          }
+        },
+        {
+          "name": "POST Create Technology — 400 Blank Name",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/technologies",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"description\": \"Missing name test\"\n}"
+            },
+            "description": "Tests @NotBlank validation on name field.\n\nExpected: 400 + {name: 'Name is required'}"
+          }
+        },
+        {
+          "name": "PUT Update Technology",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/technologies/{{techId}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Java\",\n  \"latestVersion\": \"21\",\n  \"category\": \"Programming Language\",\n  \"downloadUrl\": \"https://www.oracle.com/java/\",\n  \"officialWebsite\": \"https://www.oracle.com\",\n  \"commonErrors\": \"JAVA_HOME not set, OutOfMemoryError\",\n  \"installationSteps\": \"Download JDK → Install → Set JAVA_HOME → Verify with java -version\"\n}"
+            },
+            "description": "Partial update — only provided fields are changed.\n\nExpected: 200 OK + updated object"
+          }
+        },
+        {
+          "name": "DELETE Technology",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/technologies/9999",
+            "description": "Deletes by ID. Using 9999 so existing data is safe.\n\nExpected: 404 (ID doesn't exist)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Errors (Knowledge Base)",
+      "item": [
+        {
+          "name": "GET All Errors",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors",
+            "description": "Returns all TechError records with embedded Technology.\n\nExpected: 200 OK + array of 10 errors"
+          }
+        },
+        {
+          "name": "GET Error By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/{{errorId}}",
+            "description": "Returns one TechError with its full solution.\n\nExpected: 200 OK + error object"
+          }
+        },
+        {
+          "name": "GET Error — 404 Not Found",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/9999",
+            "description": "Tests 404 exception handler for TechError.\n\nExpected: 404 + {status, message, timestamp}"
+          }
+        },
+        {
+          "name": "SEARCH — JAVA_HOME",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/errors/search?q=JAVA_HOME",
+              "query": [{ "key": "q", "value": "JAVA_HOME" }]
+            },
+            "description": "Core DevFix AI search feature.\nSearches across: errorCode, errorMessage, cause, solution, tags\n\nExpected: 200 + matching errors"
+          }
+        },
+        {
+          "name": "SEARCH — port",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/errors/search?q=port",
+              "query": [{ "key": "q", "value": "port" }]
+            },
+            "description": "Search for port-related errors.\n\nExpected: 200 + PORT_8080_IN_USE error"
+          }
+        },
+        {
+          "name": "SEARCH — memory",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/errors/search?q=memory",
+              "query": [{ "key": "q", "value": "memory" }]
+            },
+            "description": "Search for memory-related errors.\n\nExpected: 200 + OUT_OF_MEMORY error"
+          }
+        },
+        {
+          "name": "FILTER — By Technology ID (Java)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/technology/1",
+            "description": "Returns all errors for Java (technology ID=1).\n\nExpected: 200 + 6 Java errors"
+          }
+        },
+        {
+          "name": "FILTER — By Technology ID (Maven)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/technology/2",
+            "description": "Returns all errors for Maven (technology ID=2).\n\nExpected: 200 + 4 Maven errors"
+          }
+        },
+        {
+          "name": "FILTER — By Severity (CRITICAL)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/severity/CRITICAL",
+            "description": "Returns only CRITICAL severity errors.\n\nExpected: 200 + OUT_OF_MEMORY + DB_CONNECTION_REFUSED"
+          }
+        },
+        {
+          "name": "FILTER — By Severity (HIGH)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/errors/severity/HIGH",
+            "description": "Returns only HIGH severity errors.\n\nExpected: 200 + multiple errors"
+          }
+        },
+        {
+          "name": "POST Create Error (Valid)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/errors",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technology\": { \"id\": 1 },\n  \"errorCode\": \"SPRING_BEAN_NOT_FOUND\",\n  \"errorMessage\": \"No qualifying bean of type 'com.devfix.service.MyService' available\",\n  \"category\": \"Config\",\n  \"severity\": \"HIGH\",\n  \"osAffected\": \"All\",\n  \"cause\": \"Spring cannot find or create the required bean. Usually caused by missing @Service/@Component annotation or incorrect package scan.\",\n  \"solution\": \"1. Add @Service to the class\\n2. Ensure the class is in a sub-package of the main application class\\n3. Check @ComponentScan if using custom package structure\\n4. Verify there are no circular dependency issues\",\n  \"tags\": \"spring,bean,dependency-injection,annotation,component\"\n}"
+            },
+            "description": "Adds a new error to the knowledge base.\n\nExpected: 201 Created + full error object"
+          }
+        },
+        {
+          "name": "POST Create Error — 400 Validation",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/errors",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technology\": { \"id\": 1 }\n}"
+            },
+            "description": "Tests validation — missing required fields: errorCode, errorMessage, cause, solution.\n\nExpected: 400 + map of field errors"
+          }
+        },
+        {
+          "name": "PUT Update Error",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/errors/{{errorId}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"severity\": \"CRITICAL\",\n  \"tags\": \"java,environment,path,windows,JAVA_HOME,critical\"\n}"
+            },
+            "description": "Partial update — no @Valid so only provided fields change.\n\nExpected: 200 OK + updated error"
+          }
+        },
+        {
+          "name": "DELETE Error",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/errors/9999",
+            "description": "Deletes an error by ID. Using 9999 so existing data is safe.\n\nExpected: 404 (ID doesn't exist)"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+@RestController
+@RequestMapping("/technologies")
+public class TechnologyController {
+
+    @Autowired
+    private TechnologyService technologyService;
+
+    @GetMapping
+    public List<Technology> getAllTechnologies() {
+        return technologyService.getAllTechnologies();
+    }
+}

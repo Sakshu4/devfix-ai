@@ -1,0 +1,27 @@
+package com.devfix.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.devfix.entity.Technology;
+import com.devfix.service.TechnologyService;
+
+@RestController
+@RequestMapping("/technologies")
+public class TechnologyController {
+
+    @Autowired
+    private TechnologyService technologyService;
+
+    @GetMapping
+    public List<Technology> getAllTechnologies() {
+        return technologyService.getAllTechnologies();
+    }
+
+    @PostMapping
+    public Technology addTechnology(@RequestBody Technology technology) {
+        return technologyService.saveTechnology(technology);
+    }
+}

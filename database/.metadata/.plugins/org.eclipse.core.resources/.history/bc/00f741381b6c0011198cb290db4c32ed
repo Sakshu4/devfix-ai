@@ -1,0 +1,5 @@
+package com.devfix.repository;
+
+public class TechnologyRepository {
+
+}

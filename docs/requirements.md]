@@ -1,0 +1,130 @@
+# DevFix AI
+
+## Project Vision
+
+DevFix AI is a platform that helps students and developers diagnose, understand, and fix development environment issues such as Java, Maven, Node.js, Docker, Git, and MySQL setup problems.
+
+---
+
+## Target Users
+
+* Computer Engineering Students
+* Freshers
+* Java Developers
+* Full Stack Developers
+
+---
+
+## Problem Statement
+
+Developers waste significant time solving:
+
+* Java installation issues
+* Maven configuration problems
+* Node.js setup errors
+* Docker startup issues
+* MySQL connection failures
+* Environment variable mistakes
+
+Most solutions on Google are generic and not personalized to the user's environment.
+
+---
+
+## Core Features
+
+### Feature 1: Error Knowledge Base
+
+Users can search:
+
+* JAVA_HOME not set
+* Maven not recognized
+* Port 8080 already in use
+* MySQL connection refused
+
+System displays:
+
+* Cause
+* Solution
+* Related errors
+
+---
+
+### Feature 2: Screenshot Upload
+
+Users upload screenshots containing errors.
+
+System:
+
+* Extracts text
+* Identifies the error
+* Suggests solutions
+
+---
+
+### Feature 3: OCR Engine
+
+Convert screenshot text into machine-readable text.
+
+---
+
+### Feature 4: AI Error Analysis
+
+Analyze:
+
+* Error screenshots
+* Error logs
+
+Generate:
+
+* Root cause
+* Fix steps
+* Recommendations
+
+---
+
+### Feature 5: Setup Roadmaps
+
+Provide setup guides for:
+
+* Java Development
+* Spring Boot Development
+* React Development
+
+Track user progress.
+
+---
+
+## Tech Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Tailwind CSS
+
+### Backend
+
+* Spring Boot
+* Spring Security
+* JWT Authentication
+
+### Database
+
+* PostgreSQL
+
+### OCR
+
+* Tesseract OCR
+
+### AI
+
+* OpenAI API (Future Phase)
+
+---
+
+## Future Scope
+
+* Team onboarding
+* Automated diagnostics
+* Environment readiness score
+* Project dependency analysis
