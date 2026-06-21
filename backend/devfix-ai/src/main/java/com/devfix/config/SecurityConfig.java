@@ -43,11 +43,17 @@ public class SecurityConfig {
             // Disable CSRF — not needed for stateless JWT APIs
             .csrf(csrf -> csrf.disable())
 
+            // Delegate CORS to our CorsConfig bean (fixes preflight blocking)
+            .cors(cors -> cors.configure(http))
+
             // Stateless — NO sessions, every request must carry the JWT
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
+
+                // OPTIONS preflight — always permit (required for CORS)
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // Auth endpoints — always public
                 .requestMatchers("/auth/**").permitAll()
