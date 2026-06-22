@@ -65,7 +65,7 @@ export default function InstallGuide() {
               </p>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {tech.officialWebsite && (
               <a href={tech.officialWebsite} target="_blank" rel="noopener noreferrer"
                 className="btn btn-outline" style={{ padding: '8px 14px', fontSize: '0.82rem' }}>
@@ -92,7 +92,6 @@ export default function InstallGuide() {
             {steps.map((step, idx) => {
               const isNumbered = /^\d+\./.test(step.trim());
               const content = step.replace(/^\d+\.\s*/, '').trim();
-              const stepNumber = idx + 1;
               return (
                 <div key={idx} style={{
                   display: 'flex', gap: 14, alignItems: 'flex-start',

@@ -64,7 +64,7 @@ export default function ErrorDetail() {
 
       {/* ── Cause ── */}
       <div className="card" style={{ marginBottom: 20 }}>
-        <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <span style={{ fontSize: '1.2rem' }}>🔍</span> Why This Happens
         </h2>
         <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{error.cause}</p>
@@ -72,7 +72,7 @@ export default function ErrorDetail() {
 
       {/* ── Solution ── */}
       <div className="card" style={{ marginBottom: 20 }}>
-        <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <span style={{ fontSize: '1.2rem' }}>✅</span> Step-by-Step Fix
         </h2>
         <div className="solution-block">{error.solution}</div>

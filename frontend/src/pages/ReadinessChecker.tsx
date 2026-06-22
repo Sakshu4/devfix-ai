@@ -177,7 +177,7 @@ export default function ReadinessChecker() {
                   background: done ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
                   transition: 'all 0.2s', padding: '14px 18px'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
                     {/* Checkbox */}
                     <div onClick={() => toggle(tool.id)} style={{
                       width: 26, height: 26, borderRadius: 6, flexShrink: 0,
@@ -205,7 +205,7 @@ export default function ReadinessChecker() {
                     </div>
 
                     {/* Status + hint toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
                       {done ? (
                         <span style={{ color: '#22c55e', fontSize: '0.82rem', fontWeight: 600 }}>✅ Installed</span>
                       ) : (

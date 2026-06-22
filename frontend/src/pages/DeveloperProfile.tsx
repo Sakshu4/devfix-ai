@@ -87,7 +87,7 @@ export default function DeveloperProfile() {
                 cursor: 'pointer',
                 border: selected === role.id ? `1px solid ${role.color}` : '1px solid var(--border)',
                 background: selected === role.id ? `rgba(${role.id === 'java' ? '239,68,68' : role.id === 'springboot' ? '34,197,94' : role.id === 'react' ? '56,189,248' : role.id === 'fullstack' ? '168,85,247' : '245,158,11'},0.07)` : 'var(--bg-card)',
-                display: 'flex', alignItems: 'center', gap: 16,
+                display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
                 transition: 'all 0.2s'
               }}
             >
@@ -145,7 +145,7 @@ export default function DeveloperProfile() {
                 </div>
               ))}
             </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+            <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
               <button className="btn btn-primary" onClick={() => navigate('/roadmap')}
                 style={{ flex: 1, justifyContent: 'center' }}>
                 🗺️ View Setup Roadmap →

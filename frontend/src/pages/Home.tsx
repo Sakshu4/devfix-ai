@@ -118,7 +118,7 @@ export default function Home() {
               { step: '03', icon: '✅', title: 'Apply the Fix', desc: 'Follow step-by-step solution and get back to coding' },
             ].map(s => (
               <div className="card" key={s.step}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
                   <span style={{
                     fontFamily: 'JetBrains Mono', fontSize: '0.7rem',
                     color: 'var(--accent)', background: 'rgba(59,130,246,0.1)',

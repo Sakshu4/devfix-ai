@@ -62,6 +62,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/technologies/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/errors/**").permitAll()
 
+                // AI diagnosis — public (key is server-side, no auth needed)
+                .requestMatchers(HttpMethod.POST, "/api/ai/**").permitAll()
+
                 // WRITE operations — require JWT
                 .requestMatchers(HttpMethod.POST,   "/technologies/**").authenticated()
                 .requestMatchers(HttpMethod.PUT,    "/technologies/**").authenticated()

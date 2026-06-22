@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllTechnologies } from '../api/devfix';
+import type { Technology } from '../types';
 
-const ROADMAPS: Record<string, {
+const STATIC_ROADMAPS: Record<string, {
   title: string; icon: string; color: string;
   steps: { title: string; tools: string[]; guide?: number }[]
 }> = {
@@ -47,18 +49,49 @@ const ROADMAPS: Record<string, {
   },
 };
 
-const ROLE_OPTIONS = [
-  { id: 'springboot', label: '🍃 Spring Boot Developer' },
-  { id: 'react',      label: '⚛️ React Developer' },
-  { id: 'fullstack',  label: '🚀 Full Stack Developer' },
+const STATIC_OPTIONS = [
+  { id: 'springboot', label: '🍃 Spring Boot' },
+  { id: 'react',      label: '⚛️ React' },
+  { id: 'fullstack',  label: '🚀 Full Stack' },
 ];
 
 export default function Roadmap() {
   const navigate = useNavigate();
   const savedProfile = localStorage.getItem('devfix_profile') ?? 'springboot';
+  
+  const [roadmaps, setRoadmaps] = useState(STATIC_ROADMAPS);
+  const [roleOptions, setRoleOptions] = useState(STATIC_OPTIONS);
   const [activeRoadmap, setActiveRoadmap] = useState(
-    ROADMAPS[savedProfile] ? savedProfile : 'springboot'
+    STATIC_ROADMAPS[savedProfile] ? savedProfile : 'springboot'
   );
+  
+  useEffect(() => {
+    getAllTechnologies().then(techs => {
+      const dynamicRoadmaps = { ...STATIC_ROADMAPS };
+      const dynamicOptions = [...STATIC_OPTIONS];
+      
+      techs.forEach(tech => {
+        const id = `tech-${tech.id}`;
+        if (!dynamicRoadmaps[id]) {
+          dynamicRoadmaps[id] = {
+            title: `Master ${tech.name}`,
+            icon: '📦',
+            color: '#3b82f6',
+            steps: [
+              { title: `Read ${tech.name} Documentation`, tools: [tech.officialWebsite || 'Official Docs'] },
+              { title: `Download latest version`, tools: [tech.latestVersion ? `v${tech.latestVersion}` : 'Latest'] },
+              { title: 'Follow Installation Steps', tools: ['Check Install Guide'], guide: tech.id },
+              { title: 'Verify Installation', tools: ['Terminal / Command Prompt'] }
+            ]
+          };
+          dynamicOptions.push({ id, label: `📦 ${tech.name}` });
+        }
+      });
+      
+      setRoadmaps(dynamicRoadmaps);
+      setRoleOptions(dynamicOptions);
+    });
+  }, []);
 
   // Track completed steps in localStorage
   const storageKey = `devfix_steps_${activeRoadmap}`;
@@ -75,7 +108,7 @@ export default function Roadmap() {
     });
   };
 
-  const roadmap = ROADMAPS[activeRoadmap];
+  const roadmap = roadmaps[activeRoadmap] || roadmaps['springboot'];
   const progress = Math.round((completed.size / roadmap.steps.length) * 100);
 
   return (
@@ -89,7 +122,7 @@ export default function Roadmap() {
 
         {/* Roadmap selector */}
         <div className="filter-bar" style={{ marginBottom: 28 }}>
-          {ROLE_OPTIONS.map(r => (
+          {roleOptions.map(r => (
             <button key={r.id} className={`filter-btn ${activeRoadmap === r.id ? 'active' : ''}`}
               onClick={() => {
                 setActiveRoadmap(r.id);
@@ -103,26 +136,26 @@ export default function Roadmap() {
 
         {/* Progress bar */}
         <div className="card" style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: '1.05rem' }}>{roadmap.icon} {roadmap.title}</div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginTop: 2 }}>
                 {completed.size} of {roadmap.steps.length} steps completed
               </div>
             </div>
-            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: roadmap.color }}>{progress}%</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: roadmap.color }}>{progress || 0}%</div>
           </div>
           {/* Progress bar */}
           <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 999, overflow: 'hidden' }}>
             <div style={{
-              height: '100%', width: `${progress}%`,
+              height: '100%', width: `${progress || 0}%`,
               background: `linear-gradient(90deg, var(--accent), ${roadmap.color})`,
               borderRadius: 999, transition: 'width 0.4s ease'
             }} />
           </div>
           {progress === 100 && (
             <div style={{ marginTop: 12, textAlign: 'center', color: '#22c55e', fontWeight: 600, fontSize: '0.9rem' }}>
-              🎉 Setup Complete! You are {roadmap.title.replace('Become ', '').replace(' Ready', '')} ready!
+              🎉 Setup Complete! You are {roadmap.title.replace('Become ', '').replace(' Ready', '').replace('Master ', '')} ready!
             </div>
           )}
         </div>
@@ -137,7 +170,7 @@ export default function Roadmap() {
                 background: done ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
                 cursor: 'pointer', transition: 'all 0.2s'
               }} onClick={() => toggleStep(idx)}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flexWrap: 'wrap' }}>
                   {/* Checkbox */}
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
@@ -154,9 +187,24 @@ export default function Roadmap() {
                       {step.title}
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {step.tools.map(t => (
-                        <span key={t} className="meta-chip" style={{ fontSize: '0.72rem' }}>{t}</span>
-                      ))}
+                      {step.tools.map(t => {
+                        const isLink = t.startsWith('http://') || t.startsWith('https://');
+                        return isLink ? (
+                          <a
+                            key={t}
+                            href={t}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="meta-chip"
+                            style={{ fontSize: '0.72rem', color: 'var(--accent)', textDecoration: 'underline' }}
+                            onClick={e => e.stopPropagation()}
+                          >
+                            {t.replace(/^https?:\/\/(www\.)?/, '')} 🔗
+                          </a>
+                        ) : (
+                          <span key={t} className="meta-chip" style={{ fontSize: '0.72rem' }}>{t}</span>
+                        );
+                      })}
                     </div>
                   </div>
                   {step.guide && (

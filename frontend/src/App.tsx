@@ -16,6 +16,7 @@ import ErrorLogAnalyzer      from './pages/ErrorLogAnalyzer';
 import ScreenshotAnalyzer    from './pages/ScreenshotAnalyzer';
 import SystemScanner         from './pages/SystemScanner';
 import AITroubleshooter      from './pages/AITroubleshooter';
+import ProtectedRoute        from './components/ProtectedRoute';
 import './index.css';
 
 export default function App() {
@@ -27,26 +28,24 @@ export default function App() {
           <Routes>
             {/* ── Public pages ── */}
             <Route path="/"             element={<Home />}             />
-            <Route path="/search"       element={<SearchErrors />}     />
-            <Route path="/errors/:id"   element={<ErrorDetail />}      />
-            <Route path="/technologies" element={<Technologies />}     />
-            <Route path="/guide/:id"    element={<InstallGuide />}     />
-
-            {/* ── Tools (no login required) ── */}
-            <Route path="/analyze"      element={<ErrorLogAnalyzer />}   />
-            <Route path="/screenshot"   element={<ScreenshotAnalyzer />} />
-            <Route path="/scanner"      element={<SystemScanner />}      />
-            <Route path="/ai"           element={<AITroubleshooter />}   />
-            <Route path="/readiness"    element={<ReadinessChecker />}   />
-            <Route path="/profile"      element={<DeveloperProfile />}   />
-            <Route path="/roadmap"      element={<Roadmap />}            />
-
-            {/* ── Auth pages ── */}
             <Route path="/login"        element={<Login />}    />
             <Route path="/register"     element={<Register />} />
 
-            {/* ── User pages ── */}
-            <Route path="/dashboard"    element={<Dashboard />} />
+            {/* ── Protected Features ── */}
+            <Route path="/search"       element={<ProtectedRoute><SearchErrors /></ProtectedRoute>}     />
+            <Route path="/errors/:id"   element={<ProtectedRoute><ErrorDetail /></ProtectedRoute>}      />
+            <Route path="/technologies" element={<ProtectedRoute><Technologies /></ProtectedRoute>}     />
+            <Route path="/guide/:id"    element={<ProtectedRoute><InstallGuide /></ProtectedRoute>}     />
+
+            <Route path="/analyze"      element={<ProtectedRoute><ErrorLogAnalyzer /></ProtectedRoute>}   />
+            <Route path="/screenshot"   element={<ProtectedRoute><ScreenshotAnalyzer /></ProtectedRoute>} />
+            <Route path="/scanner"      element={<ProtectedRoute><SystemScanner /></ProtectedRoute>}      />
+            <Route path="/ai"           element={<ProtectedRoute><AITroubleshooter /></ProtectedRoute>}   />
+            <Route path="/readiness"    element={<ProtectedRoute><ReadinessChecker /></ProtectedRoute>}   />
+            <Route path="/profile"      element={<ProtectedRoute><DeveloperProfile /></ProtectedRoute>}   />
+            <Route path="/roadmap"      element={<ProtectedRoute><Roadmap /></ProtectedRoute>}            />
+
+            <Route path="/dashboard"    element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
             {/* ── 404 ── */}
             <Route path="*" element={

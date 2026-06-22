@@ -119,7 +119,6 @@ export default function SystemScanner() {
   };
 
   const relevantTools = TOOLS.filter(t => ROLE_TOOLS[role].includes(t.id));
-  const scanCommand = relevantTools.map(t => t.command).join(' & echo --- & ');
 
   const runScan = () => {
     if (!output.trim()) return;
@@ -163,7 +162,7 @@ export default function SystemScanner() {
         {stage === 'instructions' && (
           <div>
             <div className="card" style={{ marginBottom: 20 }}>
-              <h2 style={{ fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h2 style={{ fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
                   background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
@@ -178,7 +177,7 @@ export default function SystemScanner() {
             </div>
 
             <div className="card" style={{ marginBottom: 20 }}>
-              <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
                   background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
@@ -190,7 +189,7 @@ export default function SystemScanner() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {relevantTools.map(tool => (
                   <div key={tool.id} style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap',
                     background: 'var(--bg-secondary)', borderRadius: 8, padding: '10px 14px',
                     border: '1px solid var(--border)'
                   }}>
@@ -216,7 +215,7 @@ export default function SystemScanner() {
         {stage === 'paste' && (
           <div>
             <div className="card" style={{ marginBottom: 16 }}>
-              <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
                   background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
@@ -244,7 +243,7 @@ export default function SystemScanner() {
                 onBlur={e => (e.target.style.borderColor = 'var(--border)')}
               />
             </div>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button className="btn btn-primary" onClick={runScan}
                 disabled={!output.trim()}
                 style={{ flex: 1, justifyContent: 'center', padding: '12px' }}>
@@ -262,7 +261,7 @@ export default function SystemScanner() {
           <div>
             {/* Score */}
             <div className="card" style={{ marginBottom: 20, background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(124,58,237,0.06))', border: '1px solid var(--border-accent)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>
                     {score === 100 ? '✅ Fully Set Up!' : score >= 70 ? '⚡ Almost Ready' : '🔧 Needs Setup'}
@@ -293,8 +292,8 @@ export default function SystemScanner() {
                   border: r.detected ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.25)',
                   background: r.detected ? 'rgba(34,197,94,0.04)' : 'rgba(239,68,68,0.04)',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '1.2rem' }}>{r.detected ? '✅' : '❌'}</span>
                       <div>
                         <div style={{ fontWeight: 600 }}>{r.tool.name}</div>
@@ -344,7 +343,7 @@ export default function SystemScanner() {
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button className="btn btn-outline" onClick={() => { setStage('instructions'); setOutput(''); setResults([]); }}>
                 ← Scan Again
               </button>

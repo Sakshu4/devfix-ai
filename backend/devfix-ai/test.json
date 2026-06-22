@@ -1,0 +1,3 @@
+{
+  "errorText": "Developer's error log:\n[ERROR] COMPILATION ERROR :\n[ERROR] .../MyService.java:[15,5] error: cannot find symbol\n[INFO] BUILD FAILURE\n[INFO] Total time: 2.341 s"
+}

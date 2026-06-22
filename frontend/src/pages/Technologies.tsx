@@ -33,7 +33,7 @@ export default function Technologies() {
           {techs.map(tech => (
             <div className="card" key={tech.id}>
               {/* Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap' }}>
                 <div>
                   <h2 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{tech.name}</h2>
                   {tech.category && (

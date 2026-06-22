@@ -24,7 +24,7 @@ export default function Dashboard() {
         border: '1px solid var(--border-accent)',
         marginBottom: 28, padding: '32px 28px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <div style={{
             width: 56, height: 56, borderRadius: '50%',
             background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
