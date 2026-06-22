@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllTechnologies } from '../api/devfix';
-import type { Technology } from '../types';
+
 
 const STATIC_ROADMAPS: Record<string, {
   title: string; icon: string; color: string;
