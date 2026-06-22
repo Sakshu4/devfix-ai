@@ -27,8 +27,8 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow React dev server (Vite default port)
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // Allow React dev server and Vercel production frontend
+        config.setAllowedOrigins(List.of("http://localhost:5173", "https://devfix-ai.vercel.app"));
 
         // Allow all HTTP methods including OPTIONS (preflight)
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
