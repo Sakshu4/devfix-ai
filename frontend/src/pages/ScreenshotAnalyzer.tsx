@@ -174,8 +174,8 @@ export default function ScreenshotAnalyzer() {
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>📸 Screenshot Analyzer</h1>
             <span style={{
               fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999,
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(124,58,237,0.2))',
-              color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)',
+              background: 'var(--accent-subtle)',
+              color: 'var(--accent)', border: '1px solid var(--border-accent)',
             }}>OCR + AI</span>
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>
@@ -195,7 +195,8 @@ export default function ScreenshotAnalyzer() {
             <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 140 }}>
               <span style={{
                 width: 28, height: 28, borderRadius: '50%',
-                background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
+                background: 'var(--accent-subtle)', color: 'var(--accent)',
+                border: '1px solid var(--border-accent)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
               }}>{s.n}</span>
@@ -214,7 +215,7 @@ export default function ScreenshotAnalyzer() {
             style={{
               border: `2px dashed ${isDragging ? 'var(--accent)' : 'var(--border)'}`,
               borderRadius: 14, padding: '60px 24px', textAlign: 'center', cursor: 'pointer',
-              background: isDragging ? 'rgba(59,130,246,0.05)' : 'var(--bg-secondary)',
+              background: isDragging ? 'var(--accent-subtle)' : 'var(--bg-secondary)',
               transition: 'all 0.2s', marginBottom: 20,
             }}
           >
@@ -251,7 +252,7 @@ export default function ScreenshotAnalyzer() {
                 <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 999, overflow: 'hidden' }}>
                   <div style={{
                     height: '100%', width: `${ocrProgress}%`,
-                    background: 'linear-gradient(90deg, var(--accent), #7c3aed)',
+                    background: 'linear-gradient(90deg, var(--accent), var(--accent-dark))',
                     borderRadius: 999, transition: 'width 0.3s',
                   }} />
                 </div>
@@ -299,9 +300,8 @@ export default function ScreenshotAnalyzer() {
               </div>
             )}
 
-            {/* AI analysis */}
             {aiAnswer && (
-              <div className="card" style={{ marginBottom: 20, border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.04)' }}>
+              <div className="card" style={{ marginBottom: 20, border: '1px solid var(--border-accent)', background: 'var(--accent-subtle)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '1.2rem' }}>🤖</span>
                   <span style={{ fontWeight: 700 }}>AI Diagnosis</span>

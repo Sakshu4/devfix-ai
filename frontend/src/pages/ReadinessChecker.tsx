@@ -128,7 +128,7 @@ export default function ReadinessChecker() {
         {/* Score card */}
         <div className="card" style={{
           marginBottom: 24,
-          background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(124,58,237,0.06))',
+          background: 'linear-gradient(135deg, var(--accent-subtle), transparent)',
           border: '1px solid var(--border-accent)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
@@ -148,7 +148,7 @@ export default function ReadinessChecker() {
           <div style={{ height: 10, background: 'var(--bg-secondary)', borderRadius: 999, overflow: 'hidden', marginTop: 16 }}>
             <div style={{
               height: '100%', width: `${score}%`,
-              background: `linear-gradient(90deg, ${scoreColor(score)}, ${score >= 80 ? '#86efac' : score >= 50 ? '#fcd34d' : '#fca5a5'})`,
+              background: `linear-gradient(90deg, ${scoreColor(score)}, ${score >= 80 ? 'var(--severity-low)' : score >= 50 ? 'var(--severity-medium)' : 'var(--severity-high)'})`,
               borderRadius: 999, transition: 'width 0.4s ease'
             }} />
           </div>
@@ -156,8 +156,8 @@ export default function ReadinessChecker() {
 
         {/* Instruction box */}
         <div style={{
-          padding: '12px 16px', background: 'rgba(59,130,246,0.07)',
-          border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8,
+          padding: '12px 16px', background: 'var(--accent-subtle)',
+          border: '1px solid var(--border-accent)', borderRadius: 8,
           fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: 20
         }}>
           💡 Open your terminal (CMD / PowerShell / Terminal) and run each command below.

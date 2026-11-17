@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider }      from './api/AuthContext';
+import { ThemeProvider }     from './utils/ThemeContext';
 import Navbar                from './components/Navbar';
 import Home                  from './pages/Home';
 import SearchErrors          from './pages/SearchErrors';
@@ -21,8 +22,9 @@ import './index.css';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Navbar />
         <main>
           <Routes>
@@ -31,10 +33,13 @@ export default function App() {
             <Route path="/login"        element={<Login />}    />
             <Route path="/register"     element={<Register />} />
 
-            {/* ── Protected Features ── */}
+            {/* ── Public & Viewable Features ── */}
+            <Route path="/technologies" element={<Technologies />}                                       />
+            <Route path="/roadmap"      element={<Roadmap />}                                            />
+
+            {/* ── Protected Tasks & Diagnostic Engines ── */}
             <Route path="/search"       element={<ProtectedRoute><SearchErrors /></ProtectedRoute>}     />
             <Route path="/errors/:id"   element={<ProtectedRoute><ErrorDetail /></ProtectedRoute>}      />
-            <Route path="/technologies" element={<ProtectedRoute><Technologies /></ProtectedRoute>}     />
             <Route path="/guide/:id"    element={<ProtectedRoute><InstallGuide /></ProtectedRoute>}     />
 
             <Route path="/analyze"      element={<ProtectedRoute><ErrorLogAnalyzer /></ProtectedRoute>}   />
@@ -43,7 +48,6 @@ export default function App() {
             <Route path="/ai"           element={<ProtectedRoute><AITroubleshooter /></ProtectedRoute>}   />
             <Route path="/readiness"    element={<ProtectedRoute><ReadinessChecker /></ProtectedRoute>}   />
             <Route path="/profile"      element={<ProtectedRoute><DeveloperProfile /></ProtectedRoute>}   />
-            <Route path="/roadmap"      element={<ProtectedRoute><Roadmap /></ProtectedRoute>}            />
 
             <Route path="/dashboard"    element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
@@ -59,5 +63,6 @@ export default function App() {
         </main>
       </BrowserRouter>
     </AuthProvider>
-  );
+  </ThemeProvider>
+);
 }

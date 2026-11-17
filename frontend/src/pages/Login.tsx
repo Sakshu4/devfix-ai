@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../api/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/dashboard';
+
   const { login } = useAuth();
   const [form,    setForm]    = useState({ username: '', password: '' });
   const [error,   setError]   = useState('');
@@ -14,9 +17,11 @@ export default function Login() {
     setError(''); setLoading(true);
     try {
       await login(form.username, form.password);
-      navigate('/dashboard');
+      navigate(redirect);
     } catch (err: any) {
-      setError(err?.response?.data?.error ?? 'Login failed. Check your credentials.');
+      const serverMsg = err?.response?.data?.error;
+      const fallback = err?.message || 'Login failed. Check your credentials.';
+      setError(serverMsg || fallback);
     } finally { setLoading(false); }
   };
 
@@ -24,13 +29,33 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-card">
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div className="logo-icon" style={{ width: 48, height: 48, fontSize: '1.4rem', margin: '0 auto 12px', borderRadius: 12 }}>⚡</div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Welcome back</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: 4 }}>
             Sign in to your DevFix AI account
           </p>
         </div>
+
+        {/* Redirect notice if arrived from a protected action */}
+        {redirect !== '/dashboard' && (
+          <div style={{
+            marginBottom: 20,
+            padding: '10px 14px',
+            background: 'var(--accent-subtle)',
+            border: '1px solid var(--border-accent)',
+            borderRadius: 8,
+            fontSize: '0.84rem',
+            color: 'var(--accent)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            fontWeight: 500,
+          }}>
+            <span>🔒</span>
+            <span>Sign in to access this feature and perform diagnostics.</span>
+          </div>
+        )}
 
         {/* Error */}
         {error && (
@@ -58,8 +83,10 @@ export default function Login() {
         </form>
 
         <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-          No account?{' '}
-          <Link to="/register" style={{ color: 'var(--accent)', fontWeight: 500 }}>Create one free</Link>
+          Don't have an account?{' '}
+          <Link to={`/register${redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} style={{ color: 'var(--accent)', fontWeight: 600 }}>
+            Create one free →
+          </Link>
         </p>
       </div>
     </div>

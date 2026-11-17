@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllTechnologies } from '../api/devfix';
-
+import { useAuth } from '../api/AuthContext';
+import AuthModal from '../components/AuthModal';
 
 const STATIC_ROADMAPS: Record<string, {
   title: string; icon: string; color: string;
@@ -57,7 +58,11 @@ const STATIC_OPTIONS = [
 
 export default function Roadmap() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const savedProfile = localStorage.getItem('devfix_profile') ?? 'springboot';
+
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState('save roadmap progress');
   
   const [roadmaps, setRoadmaps] = useState(STATIC_ROADMAPS);
   const [roleOptions, setRoleOptions] = useState(STATIC_OPTIONS);
@@ -76,7 +81,7 @@ export default function Roadmap() {
           dynamicRoadmaps[id] = {
             title: `Master ${tech.name}`,
             icon: '📦',
-            color: '#3b82f6',
+            color: 'var(--accent)',
             steps: [
               { title: `Read ${tech.name} Documentation`, tools: [tech.officialWebsite || 'Official Docs'] },
               { title: `Download latest version`, tools: [tech.latestVersion ? `v${tech.latestVersion}` : 'Latest'] },
@@ -90,7 +95,7 @@ export default function Roadmap() {
       
       setRoadmaps(dynamicRoadmaps);
       setRoleOptions(dynamicOptions);
-    });
+    }).catch(() => {});
   }, []);
 
   // Track completed steps in localStorage
@@ -99,12 +104,29 @@ export default function Roadmap() {
     () => new Set(JSON.parse(localStorage.getItem(storageKey) ?? '[]'))
   );
 
-  const toggleStep = (idx: number) => {
-    setCompleted(prev => {
-      const next = new Set(prev);
-      next.has(idx) ? next.delete(idx) : next.add(idx);
-      localStorage.setItem(storageKey, JSON.stringify([...next]));
-      return next;
+  const requireAuth = (actionDescription: string, callback: () => void) => {
+    if (user) {
+      callback();
+    } else {
+      setModalAction(actionDescription);
+      setAuthModalOpen(true);
+    }
+  };
+
+  const handleToggleStep = (idx: number) => {
+    requireAuth('check off roadmap steps and track progress', () => {
+      setCompleted(prev => {
+        const next = new Set(prev);
+        next.has(idx) ? next.delete(idx) : next.add(idx);
+        localStorage.setItem(storageKey, JSON.stringify([...next]));
+        return next;
+      });
+    });
+  };
+
+  const handleGuideClick = (guideId: number) => {
+    requireAuth('access step-by-step installation guides', () => {
+      navigate(`/guide/${guideId}`);
     });
   };
 
@@ -112,126 +134,146 @@ export default function Roadmap() {
   const progress = Math.round((completed.size / roadmap.steps.length) * 100);
 
   return (
-    <div className="container page">
-      <div style={{ maxWidth: 760, margin: '0 auto' }}>
-        {/* Header */}
-        <h1 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: 8 }}>🗺️ Setup Roadmaps</h1>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 28 }}>
-          Follow step-by-step guides to set up your development environment.
-        </p>
+    <>
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        actionName={modalAction}
+      />
 
-        {/* Roadmap selector */}
-        <div className="filter-bar" style={{ marginBottom: 28 }}>
-          {roleOptions.map(r => (
-            <button key={r.id} className={`filter-btn ${activeRoadmap === r.id ? 'active' : ''}`}
-              onClick={() => {
-                setActiveRoadmap(r.id);
-                const saved = JSON.parse(localStorage.getItem(`devfix_steps_${r.id}`) ?? '[]');
-                setCompleted(new Set(saved));
-              }}>
-              {r.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Progress bar */}
-        <div className="card" style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap' }}>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '1.05rem' }}>{roadmap.icon} {roadmap.title}</div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginTop: 2 }}>
-                {completed.size} of {roadmap.steps.length} steps completed
-              </div>
-            </div>
-            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: roadmap.color }}>{progress || 0}%</div>
+      <div className="container page">
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 12 }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>🗺️ Setup Roadmaps</h1>
+            {!user && (
+              <span className="palette-indicator" style={{ fontSize: '0.78rem', color: 'var(--accent)' }}>
+                🔒 Sign in to save progress
+              </span>
+            )}
           </div>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 28 }}>
+            Follow step-by-step guides to set up your development environment.
+          </p>
+
+          {/* Roadmap selector */}
+          <div className="filter-bar" style={{ marginBottom: 28 }}>
+            {roleOptions.map(r => (
+              <button key={r.id} className={`filter-btn ${activeRoadmap === r.id ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveRoadmap(r.id);
+                  const saved = JSON.parse(localStorage.getItem(`devfix_steps_${r.id}`) ?? '[]');
+                  setCompleted(new Set(saved));
+                }}>
+                {r.label}
+              </button>
+            ))}
+          </div>
+
           {/* Progress bar */}
-          <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 999, overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', width: `${progress || 0}%`,
-              background: `linear-gradient(90deg, var(--accent), ${roadmap.color})`,
-              borderRadius: 999, transition: 'width 0.4s ease'
-            }} />
-          </div>
-          {progress === 100 && (
-            <div style={{ marginTop: 12, textAlign: 'center', color: '#22c55e', fontWeight: 600, fontSize: '0.9rem' }}>
-              🎉 Setup Complete! You are {roadmap.title.replace('Become ', '').replace(' Ready', '').replace('Master ', '')} ready!
-            </div>
-          )}
-        </div>
-
-        {/* Steps */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {roadmap.steps.map((step, idx) => {
-            const done = completed.has(idx);
-            return (
-              <div key={idx} className="card" style={{
-                border: done ? '1px solid rgba(34,197,94,0.35)' : '1px solid var(--border)',
-                background: done ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
-                cursor: 'pointer', transition: 'all 0.2s'
-              }} onClick={() => toggleStep(idx)}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flexWrap: 'wrap' }}>
-                  {/* Checkbox */}
-                  <div style={{
-                    width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                    border: done ? '2px solid #22c55e' : '2px solid var(--border)',
-                    background: done ? '#22c55e' : 'transparent',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 0.2s', marginTop: 2
-                  }}>
-                    {done && <span style={{ color: '#fff', fontSize: '0.75rem', fontWeight: 700 }}>✓</span>}
-                    {!done && <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, fontFamily: 'JetBrains Mono' }}>{idx + 1}</span>}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600, marginBottom: 6, textDecoration: done ? 'line-through' : 'none', color: done ? 'var(--text-muted)' : 'var(--text-primary)' }}>
-                      {step.title}
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {step.tools.map(t => {
-                        const isLink = t.startsWith('http://') || t.startsWith('https://');
-                        return isLink ? (
-                          <a
-                            key={t}
-                            href={t}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="meta-chip"
-                            style={{ fontSize: '0.72rem', color: 'var(--accent)', textDecoration: 'underline' }}
-                            onClick={e => e.stopPropagation()}
-                          >
-                            {t.replace(/^https?:\/\/(www\.)?/, '')} 🔗
-                          </a>
-                        ) : (
-                          <span key={t} className="meta-chip" style={{ fontSize: '0.72rem' }}>{t}</span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {step.guide && (
-                    <button className="btn btn-outline"
-                      style={{ padding: '4px 12px', fontSize: '0.75rem', flexShrink: 0 }}
-                      onClick={e => { e.stopPropagation(); navigate(`/guide/${step.guide}`); }}>
-                      📋 Guide
-                    </button>
-                  )}
+          <div className="card" style={{ marginBottom: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '1.05rem' }}>{roadmap.icon} {roadmap.title}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginTop: 2 }}>
+                  {completed.size} of {roadmap.steps.length} steps completed
                 </div>
               </div>
-            );
-          })}
-        </div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: roadmap.color }}>{progress || 0}%</div>
+            </div>
+            {/* Progress bar */}
+            <div style={{ height: 8, background: 'var(--bg-secondary)', borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{
+                height: '100%', width: `${progress || 0}%`,
+                background: `linear-gradient(90deg, var(--accent), ${roadmap.color})`,
+                borderRadius: 999, transition: 'width 0.4s ease'
+              }} />
+            </div>
+            {progress === 100 && (
+              <div style={{ marginTop: 12, textAlign: 'center', color: '#22c55e', fontWeight: 600, fontSize: '0.9rem' }}>
+                🎉 Setup Complete! You are {roadmap.title.replace('Become ', '').replace(' Ready', '').replace('Master ', '')} ready!
+              </div>
+            )}
+          </div>
 
-        {/* Reset */}
-        <div style={{ textAlign: 'center', marginTop: 24 }}>
-          <button className="btn btn-outline"
-            style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}
-            onClick={() => {
-              localStorage.removeItem(storageKey);
-              setCompleted(new Set());
-            }}>
-            Reset progress
-          </button>
+          {/* Steps */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {roadmap.steps.map((step, idx) => {
+              const done = completed.has(idx);
+              return (
+                <div key={idx} className="card" style={{
+                  border: done ? '1px solid rgba(34,197,94,0.35)' : '1px solid var(--border)',
+                  background: done ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
+                  cursor: 'pointer', transition: 'all 0.2s'
+                }} onClick={() => handleToggleStep(idx)}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flexWrap: 'wrap' }}>
+                    {/* Checkbox */}
+                    <div style={{
+                      width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                      border: done ? '2px solid #22c55e' : '2px solid var(--border)',
+                      background: done ? '#22c55e' : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transition: 'all 0.2s', marginTop: 2
+                    }}>
+                      {done && <span style={{ color: '#fff', fontSize: '0.75rem', fontWeight: 700 }}>✓</span>}
+                      {!done && <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', fontWeight: 700, fontFamily: 'JetBrains Mono' }}>{idx + 1}</span>}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, marginBottom: 6, textDecoration: done ? 'line-through' : 'none', color: done ? 'var(--text-muted)' : 'var(--text-primary)' }}>
+                        {step.title}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {step.tools.map(t => {
+                          const isLink = t.startsWith('http://') || t.startsWith('https://');
+                          return isLink ? (
+                            <a
+                              key={t}
+                              href={t}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="meta-chip"
+                              style={{ fontSize: '0.72rem', color: 'var(--accent)', textDecoration: 'underline' }}
+                              onClick={e => e.stopPropagation()}
+                            >
+                              {t.replace(/^https?:\/\/(www\.)?/, '')} 🔗
+                            </a>
+                          ) : (
+                            <span key={t} className="meta-chip" style={{ fontSize: '0.72rem' }}>{t}</span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {step.guide && (
+                      <button className="btn btn-outline"
+                        style={{ padding: '4px 12px', fontSize: '0.75rem', flexShrink: 0 }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleGuideClick(step.guide!);
+                        }}>
+                        📋 Guide
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Reset */}
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <button className="btn btn-outline"
+              style={{ fontSize: '0.8rem', padding: '6px 14px' }}
+              onClick={() => {
+                requireAuth('reset your saved progress', () => {
+                  setCompleted(new Set());
+                  localStorage.removeItem(storageKey);
+                });
+              }}>
+              ↺ Reset Progress
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -91,8 +91,8 @@ export default function AITroubleshooter() {
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>🤖 AI Troubleshooter</h1>
             <span style={{
               fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999,
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(59,130,246,0.2))',
-              color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)',
+              background: 'var(--accent-subtle)',
+              color: 'var(--accent)', border: '1px solid var(--border-accent)',
             }}>
               Powered by OpenRouter
             </span>
@@ -135,7 +135,7 @@ export default function AITroubleshooter() {
         <div style={{ display: 'flex', gap: 10, marginBottom: 28, flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={analyze}
             disabled={loading || !query.trim()}
-            style={{ padding: '12px 28px', fontSize: '0.95rem', background: 'linear-gradient(135deg, #7c3aed, var(--accent))' }}>
+            style={{ padding: '12px 28px', fontSize: '0.95rem' }}>
             {loading ? '🤖 Analyzing...' : '🤖 AI Diagnose'}
           </button>
           {query && (
@@ -162,7 +162,7 @@ export default function AITroubleshooter() {
 
         {/* AI Answer */}
         {done && aiAnswer && (
-          <div className="card" style={{ marginBottom: 24, border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.04)' }}>
+          <div className="card" style={{ marginBottom: 24, border: '1px solid var(--border-accent)', background: 'var(--accent-subtle)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
               <span style={{ fontSize: '1.3rem' }}>🤖</span>
               <span style={{ fontWeight: 700 }}>AI Diagnosis</span>

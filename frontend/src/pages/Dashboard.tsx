@@ -20,16 +20,16 @@ export default function Dashboard() {
     <div className="container page">
       {/* ── Welcome Header ── */}
       <div className="card" style={{
-        background: 'linear-gradient(135deg, rgba(59,130,246,0.1), rgba(124,58,237,0.1))',
+        background: 'linear-gradient(135deg, var(--accent-subtle), transparent)',
         border: '1px solid var(--border-accent)',
         marginBottom: 28, padding: '32px 28px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <div style={{
             width: 56, height: 56, borderRadius: '50%',
-            background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
+            background: 'linear-gradient(135deg, var(--accent), var(--accent-dark))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.5rem', fontWeight: 800, color: '#fff', flexShrink: 0
+            fontSize: '1.5rem', fontWeight: 800, color: '#ebebd8', flexShrink: 0
           }}>
             {user.username[0].toUpperCase()}
           </div>

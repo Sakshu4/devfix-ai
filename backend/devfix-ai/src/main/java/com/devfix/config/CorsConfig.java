@@ -27,8 +27,8 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow React dev server and Vercel production frontend
-        config.setAllowedOrigins(List.of("http://localhost:5173", "https://devfix-ai.vercel.app"));
+        // Allow any React localhost port and production frontend
+        config.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*", "https://*.vercel.app", "https://devfix-ai.vercel.app"));
 
         // Allow all HTTP methods including OPTIONS (preflight)
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

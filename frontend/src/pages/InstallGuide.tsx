@@ -53,7 +53,8 @@ export default function InstallGuide() {
               {tech.latestVersion && (
                 <span style={{
                   fontFamily: 'JetBrains Mono', fontSize: '0.8rem',
-                  background: 'rgba(59,130,246,0.1)', color: 'var(--accent)',
+                  background: 'var(--accent-subtle)', color: 'var(--accent)',
+                  border: '1px solid var(--border-accent)',
                   padding: '3px 10px', borderRadius: 6
                 }}>v{tech.latestVersion}</span>
               )}
@@ -102,7 +103,7 @@ export default function InstallGuide() {
                 }}>
                   <span style={{
                     minWidth: 28, height: 28, borderRadius: '50%',
-                    background: 'rgba(59,130,246,0.15)',
+                    background: 'var(--accent-subtle)',
                     border: '1px solid var(--border-accent)',
                     color: 'var(--accent)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -137,7 +137,8 @@ export default function DeveloperProfile() {
                 }}>
                   <span style={{
                     width: 24, height: 24, borderRadius: '50%',
-                    background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
+                    background: 'var(--accent-subtle)', color: 'var(--accent)',
+                    border: '1px solid var(--border-accent)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '0.72rem', fontWeight: 700, fontFamily: 'JetBrains Mono', flexShrink: 0
                   }}>{i + 1}</span>

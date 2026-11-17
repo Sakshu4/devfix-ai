@@ -153,8 +153,8 @@ export default function ErrorLogAnalyzer() {
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>🔬 Error Log Analyzer</h1>
             <span style={{
               fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999,
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(124,58,237,0.2))',
-              color: '#60a5fa', border: '1px solid rgba(59,130,246,0.3)',
+              background: 'var(--accent-subtle)',
+              color: 'var(--accent)', border: '1px solid var(--border-accent)',
             }}>AI + KB Search</span>
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>
@@ -238,7 +238,7 @@ export default function ErrorLogAnalyzer() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {keywords.map(k => (
                     <span key={k} className="tag"
-                      style={{ background: 'rgba(59,130,246,0.12)', color: 'var(--accent)', fontSize: '0.8rem' }}>
+                      style={{ fontSize: '0.8rem' }}>
                       {k}
                     </span>
                   ))}
@@ -248,7 +248,7 @@ export default function ErrorLogAnalyzer() {
 
             {/* AI diagnosis */}
             {aiAnswer && (
-              <div className="card" style={{ marginBottom: 20, border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.04)' }}>
+              <div className="card" style={{ marginBottom: 20, border: '1px solid var(--border-accent)', background: 'var(--accent-subtle)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '1.2rem' }}>🤖</span>
                   <span style={{ fontWeight: 700 }}>AI Diagnosis</span>

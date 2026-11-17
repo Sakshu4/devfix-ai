@@ -165,7 +165,8 @@ export default function SystemScanner() {
               <h2 style={{ fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
+                  background: 'var(--accent-subtle)', color: 'var(--accent)',
+                  border: '1px solid var(--border-accent)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.8rem', fontWeight: 700
                 }}>1</span>
@@ -180,7 +181,8 @@ export default function SystemScanner() {
               <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
+                  background: 'var(--accent-subtle)', color: 'var(--accent)',
+                  border: '1px solid var(--border-accent)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.8rem', fontWeight: 700
                 }}>2</span>
@@ -218,7 +220,8 @@ export default function SystemScanner() {
               <h2 style={{ fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: 'rgba(59,130,246,0.15)', color: 'var(--accent)',
+                  background: 'var(--accent-subtle)', color: 'var(--accent)',
+                  border: '1px solid var(--border-accent)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.8rem', fontWeight: 700
                 }}>3</span>
@@ -260,7 +263,7 @@ export default function SystemScanner() {
         {stage === 'results' && (
           <div>
             {/* Score */}
-            <div className="card" style={{ marginBottom: 20, background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(124,58,237,0.06))', border: '1px solid var(--border-accent)' }}>
+            <div className="card" style={{ marginBottom: 20, background: 'linear-gradient(135deg, var(--accent-subtle), transparent)', border: '1px solid var(--border-accent)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>
